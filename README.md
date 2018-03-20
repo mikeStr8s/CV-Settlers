@@ -59,3 +59,7 @@ print mpl.get_cachedir()
 in any python environment you want and it will give you the location of the ```~/.cache``` directory. Once you make it in there you want to delete the **fontconfig** directory. After that back out of the ```~/.cache``` and move into the ```~/.matplotlib``` and delete any contents that have **font** or **cache** anywhere in their names.
 
 This should fix the problem and you should be able to continue with the project. If my instructions were unclear I used these two stackoverflow pages to solve this problem on my end: https://stackoverflow.com/questions/34771191/matplotlib-taking-time-when-being-imported, https://stackoverflow.com/questions/35734074/problems-with-matplotlib-is-building-the-font-cache-using-fc-list-this-may-tak
+
+# Online Sources
+
+Sentdex openCV for python tutorials: https://www.youtube.com/playlist?list=PLQVvvaa0QuDdttJXlLtAJxJetJcqmqlQq
