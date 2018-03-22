@@ -4,6 +4,8 @@ After playing around with Canny Edge detection I noticed that isolating strictly
 
 ![Edges](Michael-images/smalledges.png)
 
+**Note!** It is worth looking into setting up a board with all tiles flipped over and run edge detection on that to get a basic board edge layout working and see where that takes us.
+
 However, by accident I noticed that doing so made the roll number tiles isolate in nearly full detail in black and white.
 
 ![NumTile](Michael-images/tile.png)
