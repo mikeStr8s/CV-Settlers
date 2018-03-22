@@ -1,3 +1,7 @@
+# Navigation
+
+[Environment Setup](envsettup)
+
 # CV-Settlers
 This is a computer vision settlers of catan application that will be able to read gamestate and, in the future hopefully supply potential move options to each user.
 # Environment Setup
@@ -63,3 +67,7 @@ This should fix the problem and you should be able to continue with the project.
 # Online Sources
 
 Sentdex openCV for python tutorials: https://www.youtube.com/playlist?list=PLQVvvaa0QuDdttJXlLtAJxJetJcqmqlQq
+
+# Notes
+
+
