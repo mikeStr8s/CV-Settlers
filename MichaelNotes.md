@@ -2,7 +2,7 @@
 
 After playing around with Canny Edge detection I noticed that isolating strictly the board and hexagonal edges between the tiles was tiresome an unfruitful. See below
 
-![Edges](smalledges.png)
+![Edges](Michael-images/smalledges.png)
 
 However, by accident I noticed that doing so made the roll number tiles isolate in nearly full detail in black and white.
 
