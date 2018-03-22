@@ -1,2 +1,4 @@
-# Ignore the idea folder from pycharm
+#Ignore the idea folder from pycharm
 .idea/
+#Ignore edges file
+edges.png
