@@ -63,3 +63,9 @@ This should fix the problem and you should be able to continue with the project.
 # Online Sources
 
 Sentdex openCV for python tutorials: https://www.youtube.com/playlist?list=PLQVvvaa0QuDdttJXlLtAJxJetJcqmqlQq
+
+Catan-omous Dealer: https://www.ece.cmu.edu/~ece549/spring16/team08/website/index.html
+
+Markerless Tracking: https://docs.opencv.org/2.4/doc/tutorials/features2d/feature_homography/feature_homography.html#feature-homography
+
+Watershed Algorithm: https://www.pyimagesearch.com/2015/11/02/watershed-opencv/
