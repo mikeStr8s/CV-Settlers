@@ -1,5 +1,9 @@
 # CV-Settlers
 This is a computer vision settlers of catan application that will be able to read gamestate and, in the future hopefully supply potential move options to each user.
+
+# Youtube Playlist of Successes and Failures
+https://www.youtube.com/playlist?list=PLnJA_XwykARrp8raA-ueNH3rOdYRiTKhs
+
 # Environment Setup
 To get everything you need for this project you will need to install some python libraries.
 
