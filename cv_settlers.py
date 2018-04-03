@@ -2,16 +2,39 @@ import cv2
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Get the original image and set to grayscale, this makes it so that there is only ever "one" color on screen
-catanBoardImg = cv2.imread("catan-game-board.jpg", 0)
+cap = cv2.VideoCapture(1)
+img = None
+frame = None
+cont = None
 
-# Canny edge detection on catanBoardImg
-cannyBoardImg = cv2.Canny(catanBoardImg, 300, 400)
+while cap.isOpened():
+    ret, frame = cap.read()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    ret, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU)
+    image, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    cont = contours[1:]
+    frame = cv2.drawContours(frame, cont, -1, (0, 255, 0), 3)
+    # cv2.fillPoly(frame, pts=contours, color=(255, 0, 0))
+    cv2.imshow('contour detection', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        # img = frame
+        break
 
-# Save resulting canny edge image to png file
-cv2.imwrite("edges.png", cannyBoardImg)
+while cap.isOpened():
+    ret, frame = cap.read()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-# Logic to show the image and close the display window the moment ANY key is pressed
-cv2.imshow("Edges", cannyBoardImg)
-cv2.waitKey(0)
+    final = np.zeros(frame.shape, np.uint8)
+    mask = np.zeros(gray.shape, np.uint8)
+
+    for i in range(0, len(cont)):
+        mask[...] = 0
+        cv2.drawContours(mask, cont, i, 255, -1)
+        cv2.drawContours(frame, cont, i, cv2.mean(frame, mask), -1)
+
+    cv2.imshow('colored contours', frame)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
 cv2.destroyAllWindows()
