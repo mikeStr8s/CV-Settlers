@@ -69,3 +69,7 @@ Catan-omous Dealer: https://www.ece.cmu.edu/~ece549/spring16/team08/website/inde
 Markerless Tracking: https://docs.opencv.org/2.4/doc/tutorials/features2d/feature_homography/feature_homography.html#feature-homography
 
 Watershed Algorithm: https://www.pyimagesearch.com/2015/11/02/watershed-opencv/
+
+Card Game CV: http://arnab.org/blog/so-i-suck-24-automating-card-games-using-opencv-and-python
+
+Chess Board Recognition: https://github.com/SukritGupta17/Chess-Board-Recognition
