@@ -73,3 +73,5 @@ Watershed Algorithm: https://www.pyimagesearch.com/2015/11/02/watershed-opencv/
 Card Game CV: http://arnab.org/blog/so-i-suck-24-automating-card-games-using-opencv-and-python
 
 Chess Board Recognition: https://github.com/SukritGupta17/Chess-Board-Recognition
+
+OpenCV Shape Recognition: https://www.pyimagesearch.com/2016/02/08/opencv-shape-detection/
