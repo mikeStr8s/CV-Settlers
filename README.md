@@ -1,6 +1,18 @@
 # CV-Settlers
 This is a computer vision settlers of catan application that will be able to read gamestate and, in the future hopefully supply potential move options to each user.
 
+# ToDo's
+* Break up code into Class and functions to improve readability and organize flow
+* Associate tiles with resources (Gather range of colors valid for each tile)
+* Get 'Pip' and number values from tiles
+* identify settlements and roads
+* calculate victory point scores for each player
+
+### Strech ToDo's
+* logic for handling player hands
+* game assistant for move suggestion
+* Identify longest road
+
 # Youtube Playlist of Successes and Failures
 https://www.youtube.com/playlist?list=PLnJA_XwykARrp8raA-ueNH3rOdYRiTKhs
 
