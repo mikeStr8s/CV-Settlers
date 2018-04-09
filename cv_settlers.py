@@ -25,6 +25,7 @@ def find_contours(cap):
     # Update for each frame of the camera
     while cap.isOpened():
         ret, frame = cap.read()  # frame is the actual image captured by the video stream
+
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)  # Convert frame to grayscale
 
         # Thresh is the binary (black and white) threshold mapping of the grayscale image
@@ -83,41 +84,13 @@ def find_avg_color(cap, cont):
 def assign_resource(found_colors):
     """
     All logic that is needed for assigning resources to a tile in the list of contours
+
+    IMPORTANT!!!!! - You MUST change dictionary values depending on the environment that you are testing in.
+                     These values are volitile depending on a whole lot of conditions.
+                     The moment the camera is moved these values MUST be re-entered manually.
     """
-    # LIST OF DUMMY DATA, CONTAINS DIRTY DATA --> TWO TOO MANY WOOD CONTOURS DUE TO CAMERA P.O.V. AT AN ANGLE TO BOARD
-    # found_colors = [
-    #     (104.56543261667541, 148.2875930781332, 191.76249606712113, 0.0),
-    #     (116.84111463067529, 157.17359867786806, 163.180025708121, 0.0),
-    #     (120.67670078266104, 162.42682721252257, 168.18292594822395, 0.0),
-    #     (87.49339504387234, 106.06453090348086, 120.32947642464565, 0.0),
-    #     (87.0, 106.0, 120.0, 0.0),                                          <--DUPLICATE WOOD
-    #     (86.85432413079799, 106.22438804466015, 121.96509931842894, 0.0),
-    #     (87.0, 106.0, 122.0, 0.0),                                          <--DUPLICATE WOOD
-    #     (123.73147652707765, 130.9332281956687, 162.48173702441633, 0.0),
-    #     (100.9769278187102, 143.39668887779962, 188.836410602636, 0.0),
-    #     (84.12862131582624, 111.15736834753457, 163.4490850677469, 0.0),
-    #     (118.34501275737257, 124.94265116003085, 154.37907197531598, 0.0),
-    #     (117.39371774168012, 158.27478547227764, 163.75317437699883, 0.0),
-    #     (153.60840099308865, 174.95302959135745, 214.4184056901295, 0.0),
-    #     (75.94935185503559, 92.88938555169686, 151.2768971564144, 0.0),
-    #     (98.69443167640685, 137.02715214393592, 182.12925996454135, 0.0),
-    #     (90.78526894219593, 111.94497868892881, 129.76374652154004, 0.0),
-    #     (74.62289062789749, 90.7386047546638, 152.83540407224714, 0.0),
-    #     (112.09790720935601, 151.5843271524198, 157.7392859890744, 0.0),
-    #     (112.16956133193457, 116.76718343241248, 144.87310098302055, 0.0),
-    #     (98.32540036488952, 141.95503750253397, 187.91672410297994, 0.0),
-    #     (80.77515587114652, 98.57897471423622, 118.33520956009698, 0.0)
-    # ]
-
     # Dictionary of the resources and the colors associated. Colors are stored as BGR instead of RGB
-    # IMPORTANT!!!!! - You MUST change these values depending on the environment that you are testing in.
-    #                  These values are volitile depending on a whole lot of conditions.
-    #                  The moment the camera is moved these values MUST be re-entered manually
-    resource_dict = {(80,100,120,0): 'wood', (110,150,160,0): 'sheep', (75,100,150,0):  'brick', (120,130,160,0): 'stone', (100,140,190,0): 'wheat', (150,180,220,0): 'desert'}
-
-    # Lists that I made because I forgot that you can do key value pairs in python
-    # resource_colors = [(80,100,120,0),(110,150,160,0),(75,100,150,0),(120,130,160,0),(100,140,190,0),(150,180,220,0)]
-    # resource_name = ['wood', 'sheep', 'brick', 'stone', 'wheat', 'desert']
+    resource_dict = {(100,100,115,0): 'wood', (125,165,170,0): 'sheep', (100,125,175,0):  'brick', (130,135,160,0): 'stone', (110,150,190,0): 'wheat', (160,180,220,0): 'desert'}
 
     resource_type = []  # List of each resource associated with the valid contours
     closest_color = ''
