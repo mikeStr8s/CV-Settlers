@@ -147,15 +147,25 @@ def find_settlements(cap):
     while cap.isOpened():
         ret, frame = cap.read()  # frame is the actual image captured by the video stream
 
-        # img = cv2.GaussianBlur(frame, (25,25), 0)
+        # img = cv2.GaussianBlur(frame, (5,5), 0)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
         upper = np.array([114, 255, 255], dtype=np.uint8)
-        lower = np.array([94, 100, 100], dtype=np.uint8)
+        lower = np.array([75, 100, 100], dtype=np.uint8)
 
         thresh = cv2.inRange(hsv, lower, upper)
 
-        cv2.imshow('frame', thresh)
+        image, contours, hierarchy = cv2.findContours(thresh, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+
+        # Remove the first contour from the list, this one is usually the entire screen
+        cont = contours[1:]
+
+        # Iterate through the list of contours and only display the ones that have an area between the two values given
+        for i in range(0, len(cont)):
+            if 3000 > cv2.contourArea(cont[i]) > 1000:
+                frame = cv2.drawContours(frame, cont, i, (0, 255, 0), 3)  # Draw the contour on the original frame from the camera
+
+        cv2.imshow('frame', frame)
 
         # If the 'q' key is pressed, return the list of contours
         if cv2.waitKey(1) & 0xFF == ord('q'):
