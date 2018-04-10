@@ -10,8 +10,8 @@ def main():
     """
     cap = cv2.VideoCapture(1)  # Incoming video stream
     cont = find_contours(cap)  # Contour nparray returned by find_contours
-    tiles = find_avg_color(cap, cont)  # List of mean color values for each contour
-    assign_resource(tiles)  # Assign resources to each contour based on the tiles list
+    colors, tiles = find_avg_color(cap, cont)  # List of mean color values for each contour
+    assign_resource(cap, colors, tiles)  # Assign resources to each contour based on the tiles list
 
     # End program cleanup, releasing video capture device and destroying all windows
     cap.release()
@@ -49,6 +49,7 @@ def find_contours(cap):
 
         # If the 'q' key is pressed, return the list of contours
         if cv2.waitKey(1) & 0xFF == ord('q'):
+            cv2.destroyAllWindows()
             return cont
 
 
@@ -66,6 +67,7 @@ def find_avg_color(cap, cont):
         mask = np.zeros(gray.shape, np.uint8)
 
         mean_list = []  # List of average colors inside each contour
+        centroids = []  # List of contour centriods
 
         for i in range(0, len(cont)):
             #  If a contour is within specified area threshold
@@ -73,15 +75,20 @@ def find_avg_color(cap, cont):
                 mask[...] = 0
                 cv2.drawContours(mask, cont, i, 255, -1)  # Lay mask over the contour
                 mean_val = cv2.mean(frame, mask)  # Gather the average color of the exposed camera frame
-                mean_list.append(mean_val)  # Add to list
+                x, y, w, h = cv2.boundingRect(cont[i])
+                cx = int(x + w/2)
+                cy = int(y + h/2)
+                centroids.append((cx,cy))  # Add centroid
+                mean_list.append(mean_val)  # Add mean color
                 cv2.drawContours(frame, cont, i, mean_val, -1)  # Graphically display mean color on screen for user
 
         cv2.imshow('colored contours', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
-            return mean_list
+            cv2.destroyAllWindows()
+            return mean_list, centroids
 
 
-def assign_resource(found_colors):
+def assign_resource(cap, found_colors, centroids):
     """
     All logic that is needed for assigning resources to a tile in the list of contours
 
@@ -113,8 +120,14 @@ def assign_resource(found_colors):
         # Add resource that was closest to the color in the contour
         resource_type.append(closest_color)
 
-    print(resource_type)
-    print('Resouces found')
+    while cap.isOpened():
+        ret, frame = cap.read()
+        for center in centroids:
+            cv2.putText(frame, resource_type[centroids.index(center)], (center[0], center[1]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 2)
+
+        cv2.imshow('frame', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
 
 
 def find_pip_tokens():
@@ -124,7 +137,7 @@ def find_pip_tokens():
     """
 
 
-def find_settlments():
+def find_settlements():
     """
     Locate settlements for each color on the board, assign them to the color that they belong to
     TODO: figure out if this can be combined with find roads
@@ -138,24 +151,12 @@ def find_roads():
     """
 
 
-def calc_VP():
+def calc_vp():
     """
     Calculate the victory points for each player. Identify the winner (assuming no one has: Largest road, Largest army, or VP cards)
     TODO: add logic and parameters
     """
 
-
-##############################################################################
-# THE STRECH GOAL FUNCTIONS ARE BELOW, THEY WILL REMAIN EMPTY AND BELOW THIS
-# DO NOT ATTEMPT IMPLEMENTATION OF THESE FUNCTIONS UNLESS WE FIND THEY ARE
-# NECESSARY OR WE HAVE ACHIEVED THE ABOVE FUNCTIONS
-##############################################################################
-
-# Function associated with handling player hands, this would assume that all players would play open handed
-
-# Function associated with finding the longest road
-
-# ALL functions associated with handling game assistant or AI implementation
 
 if __name__ == '__main__':
     main()
