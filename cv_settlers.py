@@ -8,10 +8,11 @@ def main():
     """
     All of the sequential code that is necesary to run this application  is located here
     """
-    cap = cv2.VideoCapture(1)  # Incoming video stream
-    cont = find_contours(cap)  # Contour nparray returned by find_contours
-    colors, tiles = find_avg_color(cap, cont)  # List of mean color values for each contour
-    assign_resource(cap, colors, tiles)  # Assign resources to each contour based on the tiles list
+    cap = cv2.VideoCapture(0)  # Incoming video stream
+    # cont = find_contours(cap)  # Contour nparray returned by find_contours
+    # colors, tiles = find_avg_color(cap, cont)  # List of mean color values for each contour
+    # resource_map = assign_resource(cap, colors, tiles)  # Assign resources to each contour based on the tiles list
+    settlements = find_settlements(cap)
 
     # End program cleanup, releasing video capture device and destroying all windows
     cap.release()
@@ -97,7 +98,7 @@ def assign_resource(cap, found_colors, centroids):
                      The moment the camera is moved these values MUST be re-entered manually.
     """
     # Dictionary of the resources and the colors associated. Colors are stored as BGR instead of RGB
-    resource_dict = {(100,100,115,0): 'wood', (125,165,170,0): 'sheep', (100,125,175,0):  'brick', (130,135,160,0): 'stone', (110,150,190,0): 'wheat', (160,180,220,0): 'desert'}
+    resource_dict = {(90,125,125,0): 'wood', (110,170,160,0): 'sheep', (80,120,150,0):  'brick', (130,140,150,0): 'stone', (100,150,190,0): 'wheat', (180,215,235,0): 'desert'}
 
     resource_type = []  # List of each resource associated with the valid contours
     closest_color = ''
@@ -127,6 +128,7 @@ def assign_resource(cap, found_colors, centroids):
 
         cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
+            return resource_type
             break
 
 
@@ -137,11 +139,28 @@ def find_pip_tokens():
     """
 
 
-def find_settlements():
+def find_settlements(cap):
     """
     Locate settlements for each color on the board, assign them to the color that they belong to
     TODO: figure out if this can be combined with find roads
     """
+    while cap.isOpened():
+        ret, frame = cap.read()  # frame is the actual image captured by the video stream
+
+        # img = cv2.GaussianBlur(frame, (25,25), 0)
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+        upper = np.array([114, 255, 255], dtype=np.uint8)
+        lower = np.array([94, 100, 100], dtype=np.uint8)
+
+        thresh = cv2.inRange(hsv, lower, upper)
+
+        cv2.imshow('frame', thresh)
+
+        # If the 'q' key is pressed, return the list of contours
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            cv2.destroyAllWindows()
+            break
 
 
 def find_roads():
