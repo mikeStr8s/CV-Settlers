@@ -9,10 +9,12 @@ def main():
     All of the sequential code that is necesary to run this application  is located here
     """
     cap = cv2.VideoCapture(0)  # Incoming video stream
-    # cont = find_contours(cap)  # Contour nparray returned by find_contours
-    # colors, tiles = find_avg_color(cap, cont)  # List of mean color values for each contour
-    # resource_map = assign_resource(cap, colors, tiles)  # Assign resources to each contour based on the tiles list
+    tile_cont = find_contours(cap)  # Contour nparray returned by find_contours
+    tile_colors, tiles = find_avg_color(cap, tile_cont, 50000, 20000)  # List of mean color values for each contour
+    resource_map = assign_resource(cap, tile_colors, tiles)  # Assign resources to each contour based on the tiles list
     settlements = find_settlements(cap)
+    player_colors, city_center = find_avg_color(cap, settlements, 5000, 2500)
+    assign_players(cap, player_colors, city_center)
 
     # End program cleanup, releasing video capture device and destroying all windows
     cap.release()
@@ -54,7 +56,7 @@ def find_contours(cap):
             return cont
 
 
-def find_avg_color(cap, cont):
+def find_avg_color(cap, cont, max, min):
     """
     All of the logic that is needed for finding the average color inside a contour is located here
     """
@@ -72,7 +74,7 @@ def find_avg_color(cap, cont):
 
         for i in range(0, len(cont)):
             #  If a contour is within specified area threshold
-            if 50000 > cv2.contourArea(cont[i]) > 20000:
+            if max > cv2.contourArea(cont[i]) > min:
                 mask[...] = 0
                 cv2.drawContours(mask, cont, i, 255, -1)  # Lay mask over the contour
                 mean_val = cv2.mean(frame, mask)  # Gather the average color of the exposed camera frame
@@ -129,29 +131,20 @@ def assign_resource(cap, found_colors, centroids):
         cv2.imshow('frame', frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
             return resource_type
-            break
-
-
-def find_pip_tokens():
-    """
-    Locate pip tiles, read values, and associate them with board tiles
-    TODO: figure out if this can all be one function or if it needs to be broken up
-    """
 
 
 def find_settlements(cap):
     """
     Locate settlements for each color on the board, assign them to the color that they belong to
-    TODO: figure out if this can be combined with find roads
     """
     while cap.isOpened():
         ret, frame = cap.read()  # frame is the actual image captured by the video stream
 
-        # img = cv2.GaussianBlur(frame, (5,5), 0)
+        img = cv2.GaussianBlur(frame, (5,5), 0)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        upper = np.array([114, 255, 255], dtype=np.uint8)
-        lower = np.array([75, 100, 100], dtype=np.uint8)
+        upper = np.array([120, 255, 255], dtype=np.uint8)
+        lower = np.array([100, 100, 100], dtype=np.uint8)
 
         thresh = cv2.inRange(hsv, lower, upper)
 
@@ -162,7 +155,7 @@ def find_settlements(cap):
 
         # Iterate through the list of contours and only display the ones that have an area between the two values given
         for i in range(0, len(cont)):
-            if 3000 > cv2.contourArea(cont[i]) > 1000:
+            if 5000 > cv2.contourArea(cont[i]) > 2000:
                 frame = cv2.drawContours(frame, cont, i, (0, 255, 0), 3)  # Draw the contour on the original frame from the camera
 
         cv2.imshow('frame', frame)
@@ -170,14 +163,43 @@ def find_settlements(cap):
         # If the 'q' key is pressed, return the list of contours
         if cv2.waitKey(1) & 0xFF == ord('q'):
             cv2.destroyAllWindows()
-            break
+            return cont
 
 
-def find_roads():
-    """
-    Locate roads for each color on the board, assign them to the color they belong to
-    TODO: figure out if this can be combined with find settlements
-    """
+def assign_players(cap, found_colors, centroids):
+    # Dictionary of the players and the colors associated. Colors are stored as BGR instead of RGB
+    player_dict = {(120,80,70,0):'red', (160,105,60,0):'blue', (160,130,95,0):'white', (140,120,100,0):'orange'}
+
+    player_color = []  # List of each player associated with the valid contours
+    closest_color = ''
+
+    # Itterate through the provided list of colors found inside the contours
+    for a in found_colors:
+        min_dist = 1234567890  # Number to represent the distance between two colors
+        f = np.array(a)  # Change RGB tuple 'a' to a numpy array 'f'
+
+        # Itterate through possible resources
+        for b in player_dict.keys():
+            r = np.array(b)  # Change RGB tuple 'b' to a numpy array 'r'
+            dist = np.linalg.norm(f - r)  # Calculate the euclidean distance between the two numpy arrays
+
+            # Find the smallest distance between the found colors and the colors that represent players
+            if dist < min_dist:
+                min_dist = dist
+                closest_color = player_dict[b]
+
+        # Add player that was closest to the color in the contour
+        player_color.append(closest_color)
+
+    while cap.isOpened():
+        ret, frame = cap.read()
+        for center in centroids:
+            cv2.putText(frame, player_color[centroids.index(center)], (center[0], center[1]), cv2.FONT_HERSHEY_SIMPLEX,
+                        0.5, (255, 255, 255), 2)
+
+        cv2.imshow('frame', frame)
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            return player_color
 
 
 def calc_vp():
